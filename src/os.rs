@@ -71,6 +71,12 @@ impl OsRng {
     }
 }
 
+impl Default for OsRng {
+    fn default() -> OsRng  {
+        OsRng::new().expect("failed to initialize `OsRng`")
+    }
+}
+
 impl RngCore for OsRng {
     fn next_u32(&mut self) -> u32 {
         impls::next_u32_via_fill(self)

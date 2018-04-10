@@ -98,6 +98,21 @@ pub fn thread_rng() -> ThreadRng {
     ThreadRng { rng: THREAD_RNG_KEY.with(|t| t.clone()) }
 }
 
+impl ThreadRng {
+    /// See [`thread_rng`].
+    ///
+    /// [`thread_rng`]: fn.thread_rng.html
+    pub fn new() -> ThreadRng {
+        thread_rng()
+    }
+}
+
+impl Default for ThreadRng {
+    fn default() -> ThreadRng {
+        ThreadRng::new()
+    }
+}
+
 impl RngCore for ThreadRng {
     #[inline(always)]
     fn next_u32(&mut self) -> u32 {

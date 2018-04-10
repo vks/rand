@@ -727,6 +727,12 @@ impl JitterRng {
     }
 }
 
+impl Default for JitterRng {
+    fn default() -> JitterRng {
+        JitterRng::new().expect("failed to initialize `JitterRng`")
+    }
+}
+
 #[cfg(feature="std")]
 mod platform {
     #[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "windows",
