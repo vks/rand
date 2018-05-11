@@ -25,13 +25,11 @@
 //! the square at random, calculate the fraction that fall within the circle,
 //! and multiply this fraction by 4.
 
-#![cfg(feature="std")]
-
-
 extern crate rand;
 
 use rand::distributions::{Distribution, Uniform};
 
+#[cfg(feature="std")]
 fn main() {
    let range = Uniform::new(-1.0f64, 1.0);
    let mut rng = rand::thread_rng();
@@ -50,3 +48,6 @@ fn main() {
    // prints something close to 3.14159...
    println!("π is approximately {}", 4. * (in_circle as f64) / (total as f64));
 }
+
+#[cfg(not(feature="std"))]
+fn main() {}
