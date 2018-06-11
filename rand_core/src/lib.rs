@@ -229,7 +229,8 @@ pub trait CryptoRng {}
 /// [`rand::FromEntropy`]: ../rand/trait.FromEntropy.html
 pub trait SeedableRng: Sized {
     /// Seed type, which is restricted to types mutably-dereferencable as `u8`
-    /// arrays (we recommend `[u8; N]` for some `N`).
+    /// arrays (in order to avoid portability hazards due to endianess, we 
+    /// recommend `[u8; N]` for some `N`).
     ///
     /// It is recommended to seed PRNGs with a seed of at least circa 100 bits,
     /// which means an array of `[u8; 12]` or greater to avoid picking RNGs with
