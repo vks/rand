@@ -115,6 +115,8 @@ pub use num_traits;
 
 #[cfg(feature = "alloc")]
 pub mod weighted_alias;
+#[cfg(feature = "alloc")]
+pub mod weighted_fldr;
 
 mod binomial;
 mod cauchy;
