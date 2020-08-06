@@ -150,6 +150,10 @@ distr_int!(distr_weighted_fldr_i32, i32, rand_distr::weighted_fldr::WeightedInde
 distr_int!(distr_weighted_fldr_large_set, i32, rand_distr::weighted_fldr::WeightedIndex::new((0..10000).rev().chain(1..10001).collect()).unwrap());
 distr_weighted_new!(distr_weighted_fldr_new, rand_distr::weighted_fldr::WeightedIndex::new);
 
+// Uniform
+distr_int!(distr_uniform, i8, rand::distributions::Uniform::new(-1, 4));
+distr_int!(distr_uniform_fdr, i8, rand_distr::uniform_fdr::Uniform::new(-1, 4));
+
 #[bench]
 fn dist_iter(b: &mut Bencher) {
     let mut rng = Pcg64Mcg::from_entropy();
