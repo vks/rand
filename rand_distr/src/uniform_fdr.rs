@@ -85,13 +85,7 @@ macro_rules! uniform_int_impl {
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(low < high);
-                UniformInt {
-                    n: high - low,
-                    low,
-                    buffer: Cell::new(0),
-                    bit: Cell::new(0),
-                }
+                Self::new_inclusive(low, high - 1)
             }
 
             #[inline] // if the range is constant, this helps LLVM to do the
@@ -103,7 +97,13 @@ macro_rules! uniform_int_impl {
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                Self::new(low, high + 1)
+                assert!(low <= high);
+                UniformInt {
+                    n: high - low,
+                    low,
+                    buffer: Cell::new(0),
+                    bit: Cell::new(0),
+                }
             }
 
             #[inline]
@@ -121,7 +121,7 @@ macro_rules! uniform_int_impl {
                         self.bit.set(self.bit.get() + 1);
                     }
                     if v >= self.n {
-                        if c < self.n {
+                        if c <= self.n {
                             return self.low + c;
                         }
                         v -= self.n;
