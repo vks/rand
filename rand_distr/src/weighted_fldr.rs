@@ -82,20 +82,22 @@ impl Distribution<i32> for WeightedIndex {
         let mut d: i32 = 0;
 
         loop {
-            let b: bool = rng.gen();
-            let b = b as i32;
-            d = 2*d + (1 - b);
-            if d < h1[c as usize] {
-                let z = h2[(d*k + c) as usize];
-                if z < n {
-                    return z;
+            let r = rng.next_u64();
+            for bit in 0..64 {
+                let b = ((r >> bit) & 1) as i32;
+                d = 2*d + (1 - b);
+                if d < h1[c as usize] {
+                    let z = h2[(d*k + c) as usize];
+                    if z < n {
+                        return z;
+                    } else {
+                        d = 0;
+                        c = 0;
+                    }
                 } else {
-                    d = 0;
-                    c = 0;
+                    d -= h1[c as usize];
+                    c += 1;
                 }
-            } else {
-                d -= h1[c as usize];
-                c += 1;
             }
         }
     }
