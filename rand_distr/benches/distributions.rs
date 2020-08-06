@@ -105,6 +105,18 @@ macro_rules! distr_arr {
     };
 }
 
+macro_rules! distr_weighted_new {
+    ($fnn:ident, $distr:expr) => {
+        #[bench]
+        fn $fnn(b: &mut Bencher) {
+            let w: Vec<i32> = (0..10000).rev().chain(1..10001).collect();
+            b.iter(|| {
+                $distr(w.clone())
+            });
+        }
+    };
+}
+
 
 // distributions
 distr_float!(distr_exp, f64, Exp::new(1.23 * 4.56).unwrap());
@@ -126,13 +138,17 @@ distr_int!(distr_weighted_i8, usize, WeightedIndex::new(&[1i8, 2, 3, 4, 12, 0, 2
 distr_int!(distr_weighted_u32, usize, WeightedIndex::new(&[1u32, 2, 3, 4, 12, 0, 2, 1]).unwrap());
 distr_int!(distr_weighted_f64, usize, WeightedIndex::new(&[1.0f64, 0.001, 1.0/3.0, 4.01, 0.0, 3.3, 22.0, 0.001]).unwrap());
 distr_int!(distr_weighted_large_set, usize, WeightedIndex::new((0..10000).rev().chain(1..10001)).unwrap());
+distr_weighted_new!(distr_weighted_new, WeightedIndex::new);
 
 distr_int!(distr_weighted_alias_method_i8, usize, WeightedAliasIndex::new(vec![1i8, 2, 3, 4, 12, 0, 2, 1]).unwrap());
 distr_int!(distr_weighted_alias_method_u32, usize, WeightedAliasIndex::new(vec![1u32, 2, 3, 4, 12, 0, 2, 1]).unwrap());
 distr_int!(distr_weighted_alias_method_f64, usize, WeightedAliasIndex::new(vec![1.0f64, 0.001, 1.0/3.0, 4.01, 0.0, 3.3, 22.0, 0.001]).unwrap());
 distr_int!(distr_weighted_alias_method_large_set, usize, WeightedAliasIndex::new((0..10000).rev().chain(1..10001).collect()).unwrap());
+distr_weighted_new!(distr_weighted_alias_new, WeightedAliasIndex::new);
 
 distr_int!(distr_weighted_fldr_i32, i32, rand_distr::weighted_fldr::WeightedIndex::new(vec![1i32, 2, 3, 4, 12, 0, 2, 1]).unwrap());
+distr_int!(distr_weighted_fldr_large_set, i32, rand_distr::weighted_fldr::WeightedIndex::new((0..10000).rev().chain(1..10001).collect()).unwrap());
+distr_weighted_new!(distr_weighted_fldr_new, rand_distr::weighted_fldr::WeightedIndex::new);
 
 #[bench]
 fn dist_iter(b: &mut Bencher) {
