@@ -5,6 +5,8 @@
 //! > Probability Distributions. In AISTATS 2020: Proceedings of the 23rd
 //! > International Conference on Artificial Intelligence and Statistics,
 //! > Proceedings of Machine Learning Research 108, Palermo, Sicily, Italy, 2020.
+use core::cell::Cell;
+
 use alloc::vec::Vec;
 use alloc::vec;
 
@@ -18,10 +20,11 @@ fn bit_length(x: i32) -> i32 {
 }
 
 /// Distribution of weighted indices with Fast Loaded Dice Roller method.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct WeightedIndex {
     n: i32, m: i32, k: i32,
     h1: Vec<i32>, h2: Vec<i32>,
+    buffer: Cell<u64>, bit: Cell<u8>,
 }
 
 impl WeightedIndex {
@@ -68,7 +71,7 @@ impl WeightedIndex {
             }
         }
 
-        Ok(WeightedIndex { n, m, k, h1, h2 })
+        Ok(WeightedIndex { n, m, k, h1, h2, buffer: 0.into(), bit: 64.into() })
     }
 }
 
@@ -82,23 +85,25 @@ impl Distribution<i32> for WeightedIndex {
         let mut d: i32 = 0;
 
         loop {
-            let r = rng.next_u64();
-            for bit in 0..64 {
-                let b = ((r >> bit) & 1) as i32;
-                d = 2*d + (1 - b);
-                if d < h1[c as usize] {
-                    let z = h2[(d*k + c) as usize];
-                    if z < n {
-                        return z;
-                    } else {
-                        d = 0;
-                        c = 0;
-                    }
-                } else {
-                    d -= h1[c as usize];
-                    c += 1;
-                }
+            if self.bit.get() >= 64 {
+                self.buffer.set(rng.next_u64());
+                self.bit.set(0);
             }
+            let b = ((self.buffer.get() >> self.bit.get()) & 1) as i32;
+            d = 2*d + (1 - b);
+            if d < h1[c as usize] {
+                let z = h2[(d*k + c) as usize];
+                if z < n {
+                    return z;
+                } else {
+                    d = 0;
+                    c = 0;
+                }
+            } else {
+                d -= h1[c as usize];
+                c += 1;
+            }
+            self.bit.set(self.bit.get() + 1);
         }
     }
 }
