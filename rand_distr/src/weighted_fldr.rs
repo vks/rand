@@ -20,7 +20,7 @@ fn bit_length(x: i32) -> i32 {
 /// Distribution of weighted indices with Fast Loaded Dice Roller method.
 #[derive(Debug)]
 pub struct WeightedIndex {
-    n: i32, m: i32, k: i32, r: i32,
+    n: i32, m: i32, k: i32,
     h1: Vec<i32>, h2: Vec<i32>,
 }
 
@@ -68,7 +68,7 @@ impl WeightedIndex {
             }
         }
 
-        Ok(WeightedIndex { n, m, k, r, h1, h2 })
+        Ok(WeightedIndex { n, m, k, h1, h2 })
     }
 }
 
